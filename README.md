@@ -454,3 +454,4 @@ stonks/
 ## License
 
 This project is for educational and personal use only. Ensure compliance with API terms of service.# Contributors updated
+# Performance improvements
