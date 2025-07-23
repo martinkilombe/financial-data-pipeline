@@ -12,7 +12,7 @@ while true; do
     echo -n "$(date '+%Y-%m-%d %H:%M:%S') - "
     
     # Run the fetcher
-    python yfinance_fetcher.py AAPL
+    python yfinance_fetcher.py NVDA AAPL MSFT GOOGL META PLTR
     
     # Wait 60 seconds
     sleep 60

@@ -79,10 +79,10 @@ def main(tickers, debug):
                 stock = Stock(
                     ticker=ticker_symbol,
                     time=current_time,
-                    high=high,
-                    low=low,
-                    avg=avg,
-                    sale=current_price,
+                    high=float(high),
+                    low=float(low),
+                    avg=float(avg),
+                    sale=float(current_price),
                     meta={
                         "source": "yfinance",
                         "volume": int(volume),

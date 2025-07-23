@@ -1,4 +1,7 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Database settings
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///stocks.db")
