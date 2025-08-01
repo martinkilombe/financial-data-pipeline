@@ -58,15 +58,25 @@ def main(tickers, debug):
                 low = minute_data['Low'].min()
                 avg = (high + low) / 2
                 
-                # Get volume directly from 1-minute data
-                # Use previous minute if current minute has 0 volume (data lag)
-                current_volume = int(minute_data['Volume'].iloc[-1])
-                if current_volume == 0 and len(minute_data) > 1:
-                    volume = int(minute_data['Volume'].iloc[-2])
-                    logger.debug(f"Using previous minute volume (current=0): {volume:,}")
-                else:
-                    volume = current_volume
-                    logger.debug(f"Using current minute volume: {volume:,}")
+                # Get volume from most recent non-zero minute (within last 5 minutes)
+                volume = 0
+                for i in range(1, min(6, len(minute_data) + 1)):
+                    potential_volume = int(minute_data['Volume'].iloc[-i])
+                    if potential_volume > 0:
+                        volume = potential_volume
+                        if i == 1:
+                            logger.debug(f"Using current minute volume: {volume:,}")
+                        else:
+                            logger.debug(f"Using volume from {i} minute(s) ago: {volume:,}")
+                        break
+                
+                if debug:
+                    last_5_volumes = minute_data['Volume'].tail(5).values
+                    last_5_times = minute_data.tail(5).index.strftime('%H:%M').values
+                    logger.debug(f"Last 5 minutes volume: {list(zip(last_5_times, last_5_volumes))}")
+                
+                if volume == 0:
+                    logger.debug("No volume found in last 5 minutes")
                 
                 # Get the most recent data point from 1-minute data
                 latest_row = minute_data.iloc[-1]
