@@ -8,12 +8,14 @@ echo "Press Ctrl+C to stop"
 echo "----------------------------------------"
 
 while true; do
+    # Wait until next minute mark + 5 second buffer
+    current_second=$(date +%S)
+    sleep_time=$((60 - current_second + 5))
+    sleep $sleep_time
+    
     # Get current time
     echo -n "$(date '+%Y-%m-%d %H:%M:%S') - "
     
     # Run the fetcher
-    python yfinance_fetcher.py NVDA AAPL MSFT GOOGL META PLTR
-    
-    # Wait 60 seconds
-    sleep 60
+    python3 yfinance_fetcher.py AAPL AIQ AMD AMZN AVGO GOOGL INTC META MSFT NVDA ORCL PLTR TSM
 done

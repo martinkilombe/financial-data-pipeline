@@ -42,35 +42,34 @@ def main(tickers, debug):
                 # Get current info
                 info = ticker.info
                 
-                # Try to get current price from multiple fields
-                current_price = None
-                for price_field in ['currentPrice', 'regularMarketPrice', 'previousClose']:
-                    if price_field in info and info[price_field] is not None:
-                        current_price = info[price_field]
-                        logger.debug(f"Got price from {price_field}: {current_price}")
-                        break
+                # Get 1-minute data for prices and volume
+                logger.debug(f"Fetching 1-minute data")
+                minute_data = ticker.history(period="1d", interval="1m", prepost=True)
                 
-                if current_price is None:
-                    logger.warning(f"Could not get current price for {ticker_symbol}")
+                if minute_data.empty:
+                    logger.warning(f"No 1-minute data available for {ticker_symbol}")
                     continue
                 
-                # Get today's data
-                today_data = ticker.history(period="1d", interval="1m")
+                # Get current price from latest 1-minute bar
+                current_price = float(minute_data['Close'].iloc[-1])
                 
-                if today_data.empty:
-                    logger.warning(f"No data available for {ticker_symbol}")
-                    continue
-                
-                # Calculate high/low/avg for today so far
-                high = today_data['High'].max()
-                low = today_data['Low'].min()
+                # Calculate high/low/avg for today from 1-minute data
+                high = minute_data['High'].max()
+                low = minute_data['Low'].min()
                 avg = (high + low) / 2
                 
-                # Get volume
-                volume = today_data['Volume'].sum()
+                # Get volume directly from 1-minute data
+                # Use previous minute if current minute has 0 volume (data lag)
+                current_volume = int(minute_data['Volume'].iloc[-1])
+                if current_volume == 0 and len(minute_data) > 1:
+                    volume = int(minute_data['Volume'].iloc[-2])
+                    logger.debug(f"Using previous minute volume (current=0): {volume:,}")
+                else:
+                    volume = current_volume
+                    logger.debug(f"Using current minute volume: {volume:,}")
                 
-                # Get the most recent data point
-                latest_row = today_data.iloc[-1]
+                # Get the most recent data point from 1-minute data
+                latest_row = minute_data.iloc[-1]
                 
                 logger.info(f"{ticker_symbol}: Price=${current_price:.2f}, "
                            f"High=${high:.2f}, Low=${low:.2f}, Volume={volume:,}")
