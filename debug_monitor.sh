@@ -16,6 +16,6 @@ while true; do
     # Get current time
     echo -n "$(date '+%Y-%m-%d %H:%M:%S') - "
     
-    # Run the fetcher
-    python3 yfinance_fetcher.py AAPL AIQ AMD AMZN AVGO GOOGL INTC META MSFT NVDA ORCL PLTR TSM
+    # Run the fetcher (ensure we're in the correct directory)
+    cd "$(dirname "${BASH_SOURCE[0]}")" && python3 yfinance_fetcher.py AAPL AIQ AMD AMZN AVGO GOOGL INTC META MSFT NVDA ORCL PLTR TSM
 done
