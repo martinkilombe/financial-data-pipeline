@@ -49,10 +49,10 @@ graph TB
     K --> F
     G --> L
     
-    style A fill:#e1f5fe
-    style B fill:#e1f5fe
-    style G fill:#c8e6c9
-    style I fill:#fff3e0
+    style A fill:#1976d2,color:#ffffff
+    style B fill:#1976d2,color:#ffffff
+    style G fill:#388e3c,color:#ffffff
+    style I fill:#f57c00,color:#ffffff
 ```
 
 ## Data Flow Architecture
