@@ -60,29 +60,31 @@ graph TB
 ```mermaid
 sequenceDiagram
     participant S as Scheduler/Cron
-    participant M as Market Check
+    participant M as Market Check  
     participant P as Polygon.io
     participant Y as Yahoo Finance
     participant V as Validator
     participant D as Database
     participant L as Logger
     
-    S->>M: Check market status
-    M-->>S: Market open/closed + timezone
+    Note over S,L: Production Data Flow
+    
+    S->>+M: Check market status
+    M-->>-S: Market open/closed + timezone
     
     alt Market Open
         par Real-time Collection
-            S->>Y: Fetch current prices
+            S->>+Y: Fetch current prices
             Y-->>V: OHLC + volume data
             V->>V: Validate & transform
-            V->>D: Store with metadata
-            D->>L: Log transaction
+            V->>+D: Store with metadata
+            D->>-L: Log transaction
         and Historical Backfill
-            S->>P: Request historical bars
+            S->>+P: Request historical bars
             P-->>V: Minute/hour aggregates
             V->>V: Calculate VWAP + validate
-            V->>D: Batch insert (1000 records)
-            D->>L: Log batch status
+            V->>+D: Batch insert (1000 records)
+            D->>-L: Log batch status
         end
     else Market Closed
         S->>L: Log skip reason
