@@ -203,11 +203,6 @@ CREATE INDEX idx_stocks_meta_gin ON stocks USING GIN (meta);
 - Real-time portfolio performance monitoring
 - Technical indicator calculation and validation
 
-**Data Engineering Portfolio:**
-- Demonstrates production-grade ETL pipeline design
-- Showcases multi-source data integration patterns
-- Exhibits fault-tolerant system architecture
-- Illustrates scalable data processing techniques
 
 **Research & Development:**
 - Market microstructure analysis
@@ -288,14 +283,17 @@ alembic upgrade head
 ### Historical Data Collection
 
 ```bash
-# Collect comprehensive historical dataset
+# Collect comprehensive historical dataset for multiple stocks
 python backfill.py AAPL --days 90 --interval minute
+python backfill.py MSFT --days 90 --interval minute
+python backfill.py GOOGL --days 90 --interval minute
 
 # High-frequency data for algorithmic trading
-python backfill.py AAPL --days 30 --interval minute --debug
+python backfill.py NVDA --days 30 --interval minute --debug
 
-# Daily aggregates for trend analysis  
+# Daily aggregates for trend analysis (all major tech stocks)
 python backfill.py AAPL --interval day --multiplier 1 --days 365
+python backfill.py MSFT --interval day --multiplier 1 --days 365
 ```
 
 ### Real-Time Data Streaming
